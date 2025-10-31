@@ -4,9 +4,7 @@ export const authService = {
   // 用戶登入
   login: async (loginData) => {
     try {
-      // ✅ api.post 已經通過攔截器返回 response.data
       const data = await api.post('/api/v1/auth/login', loginData);
-      // data 現在就是 { success: true, message: "...", data: {...} }
       return data;
     } catch (error) {
       return {
