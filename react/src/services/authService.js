@@ -1,48 +1,57 @@
 import api from './api';
 
-// 認證相關API服務
 export const authService = {
   // 用戶登入
   login: async (loginData) => {
     try {
-      const response = await api.post('/api/v1/auth/login', loginData);
-      return response.data;
+      // ✅ api.post 已經通過攔截器返回 response.data
+      const data = await api.post('/api/v1/auth/login', loginData);
+      // data 現在就是 { success: true, message: "...", data: {...} }
+      return data;
     } catch (error) {
-      throw error.response?.data || error.message;
+      return {
+        success: false,
+        message: error.message || '登入失敗'
+      };
     }
   },
 
-  // 用戶註冊
   register: async (registerData) => {
     try {
-      const response = await api.post('/api/v1/auth/register', registerData);
-      return response.data;
+      const data = await api.post('/api/v1/auth/register', registerData);
+      return data;
     } catch (error) {
-      throw error.response?.data || error.message;
+      return {
+        success: false,
+        message: error.message || '註冊失敗'
+      };
     }
   },
 
-  // 忘記密碼
   forgotPassword: async (forgotPasswordData) => {
     try {
-      const response = await api.post('/api/v1/auth/forgot-password', forgotPasswordData);
-      return response.data;
+      const data = await api.post('/api/v1/auth/forgot-password', forgotPasswordData);
+      return data;
     } catch (error) {
-      throw error.response?.data || error.message;
+      return {
+        success: false,
+        message: error.message || '請求失敗'
+      };
     }
   },
 
-  // 檢查登入狀態
   checkLogin: async (email) => {
     try {
-      const response = await api.get(`/api/v1/auth/check-login/${email}`);
-      return response.data;
+      const data = await api.get(`/api/v1/auth/check-login/${email}`);
+      return data;
     } catch (error) {
-      throw error.response?.data || error.message;
+      return {
+        success: false,
+        message: error.message || '檢查失敗'
+      };
     }
   },
 
-  // 登出
   logout: () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
