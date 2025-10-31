@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: demo-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: demo_db
+      MYSQL_USER: demo_user
+      MYSQL_PASSWORD: demo_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - demo-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  backend:
+    build: ./spring-boot
+    container_name: demo-app
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/demo_db
+      SPRING_DATASOURCE_USERNAME: demo_user
+      SPRING_DATASOURCE_PASSWORD: demo_password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: true
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - demo-network
+
+  frontend:
+    build: ./react
+    container_name: react-app
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true
+    depends_on:
+      - backend
+    networks:
+      - demo-network
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  demo-network:
+    driver: bridge

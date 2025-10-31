@@ -1,0 +1,134 @@
+/* Material-UI 後台管理員登入頁面樣式 */
+.mui-admin-login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #2c3e50 100%);
+  padding: 20px;
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.mui-admin-login-card {
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25) !important;
+  border-radius: 16px !important;
+  overflow: hidden;
+  animation: adminSlideUp 0.6s ease-out;
+  border-top: 4px solid #e74c3c;
+}
+
+@keyframes adminSlideUp {
+  from {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.mui-admin-login-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.mui-admin-logo {
+  margin-bottom: 20px;
+}
+
+.mui-admin-icon {
+  font-size: 64px;
+  color: #e74c3c;
+  display: block;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.mui-admin-login-header .MuiTypography-root {
+  margin-bottom: 8px;
+}
+
+.mui-admin-footer {
+  text-align: center;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #f0f0f0;
+}
+
+/* Material-UI 組件自定義樣式 */
+.mui-admin-login-card .MuiTextField-root .MuiInputLabel-root {
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.mui-admin-login-card .admin-login-button {
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  border: none;
+  height: 48px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease;
+}
+
+.mui-admin-login-card .admin-login-button:hover {
+  background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(231, 76, 60, 0.4);
+}
+
+.mui-admin-login-card .MuiAlert-root {
+  border-radius: 8px;
+}
+
+/* Material-UI TextField 自定義樣式 */
+.mui-admin-login-card .MuiTextField-root {
+  margin-bottom: 16px;
+}
+
+.mui-admin-login-card .MuiTextField-root .MuiOutlinedInput-root {
+  border-radius: 8px;
+}
+
+.mui-admin-login-card .MuiTextField-root .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: #e74c3c;
+}
+
+.mui-admin-login-card .MuiTextField-root .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #e74c3c;
+}
+
+/* 返回按鈕樣式 */
+.back-to-user-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  transition: all 0.2s ease;
+}
+
+.back-to-user-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* 響應式設計 */
+@media (max-width: 480px) {
+  .mui-admin-login-container {
+    padding: 15px;
+  }
+
+  .mui-admin-login-card {
+    margin: 0 10px;
+  }
+
+  .mui-admin-icon {
+    font-size: 48px;
+  }
+}

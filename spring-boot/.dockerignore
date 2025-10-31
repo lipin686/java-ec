@@ -1,0 +1,9 @@
+target/
+!target/*.jar
+*.log
+.git
+.gitignore
+README.md
+Dockerfile
+docker-compose.yml
+

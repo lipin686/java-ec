@@ -1,0 +1,62 @@
+/* Dashboard.css */
+.dashboard-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.dashboard-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1rem 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.welcome-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease-in-out;
+}
+
+.welcome-card:hover {
+  transform: translateY(-2px);
+}
+
+.user-info-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+.quick-actions-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+.status-card {
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.logout-btn {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+  background: rgba(255,255,255,0.2);
+  transform: translateY(-1px);
+}
+
+.admin-access-btn {
+  background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+  color: white;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.admin-access-btn:hover {
+  background: linear-gradient(135deg, #f57c00 0%, #ef6c00 100%);
+  transform: translateY(-1px);
+}

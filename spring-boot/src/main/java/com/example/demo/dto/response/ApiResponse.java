@@ -1,0 +1,43 @@
+package com.example.demo.dto.response;
+
+import lombok.Data;
+import lombok.Builder;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
+/**
+ * 通用API响应包装类
+ * 统一返回格式
+ */
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class ApiResponse<T> {
+    private boolean success;
+    private String message;
+    private T data;
+
+    public static <T> ApiResponse<T> success(T data) {
+        return ApiResponse.<T>builder()
+                .success(true)
+                .message("操作成功")
+                .data(data)
+                .build();
+    }
+
+    public static <T> ApiResponse<T> success(String message, T data) {
+        return ApiResponse.<T>builder()
+                .success(true)
+                .message(message)
+                .data(data)
+                .build();
+    }
+
+    public static <T> ApiResponse<T> error(String message) {
+        return ApiResponse.<T>builder()
+                .success(false)
+                .message(message)
+                .build();
+    }
+}
