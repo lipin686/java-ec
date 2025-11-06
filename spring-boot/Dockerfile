@@ -1,5 +1,5 @@
 # 使用官方的OpenJDK 17作为基础镜像
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jdk
 
 # 设置工作目录
 WORKDIR /app
