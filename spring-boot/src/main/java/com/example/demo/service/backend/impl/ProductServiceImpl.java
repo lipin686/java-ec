@@ -60,10 +60,11 @@ public class ProductServiceImpl implements ProductService {
         if (imageFile == null || imageFile.isEmpty()) {
             return null;
         }
-        String uploadDir = "spring-boot/public/images/products/";
+        // 將圖片存到 public/images/products/ 目錄
+        String uploadDir = "public/images/products/";
         String ext = extractFileExtension(imageFile.getOriginalFilename());
         String fileName = productNo + "_" + System.currentTimeMillis() + ext;
-        Path uploadPath = Paths.get(uploadDir);
+        Path uploadPath = Paths.get(uploadDir).toAbsolutePath();
         try {
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);

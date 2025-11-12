@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { authService } from '../services/authService';
+import { authService } from '../services/frontend/authService.js';
 
 // 創建認證上下文
 const AuthContext = createContext();
@@ -10,7 +10,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // 初始化時檢查本地存儲的用戶信息
+  // 初始化时检查本地存储的用户信息
   useEffect(() => {
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
         setUser(parsedUser);
         setIsAuthenticated(true);
       } catch (error) {
-        console.error('解析用戶數據失敗:', error);
+        console.error('解析用户数据失败:', error);
         localStorage.removeItem('token');
         localStorage.removeItem('user');
       }
@@ -40,6 +40,7 @@ export const AuthProvider = ({ children }) => {
         // 保存到本地存儲
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(userData));
+        localStorage.setItem('userToken', token); // 新增
 
         // 更新狀態
         setUser(userData);
@@ -63,6 +64,9 @@ export const AuthProvider = ({ children }) => {
     authService.logout();
     setUser(null);
     setIsAuthenticated(false);
+    localStorage.removeItem('token'); // 新增
+    localStorage.removeItem('user');  // 新增
+    localStorage.removeItem('userToken'); // 新增
   };
 
   // 上下文值

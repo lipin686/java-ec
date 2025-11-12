@@ -12,9 +12,12 @@ const api = axios.create({
 // 請求攔截器
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('adminToken') || localStorage.getItem('userToken');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    // 不要在登入 API 時加 Authorization
+    if (!config.url.endsWith('/auth/login')) {
+      const token = localStorage.getItem('adminToken') || localStorage.getItem('userToken');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
     return config;
   },
