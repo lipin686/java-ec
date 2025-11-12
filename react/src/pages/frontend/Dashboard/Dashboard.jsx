@@ -146,7 +146,7 @@ const Dashboard = () => {
                     <ListItemText
                       primary="角色"
                       secondary={
-                        <Box sx={{ mt: 1 }}>
+                        <span>
                           {user?.roles?.map((role) => (
                             <Chip
                               key={role}
@@ -154,9 +154,10 @@ const Dashboard = () => {
                               color={role === 'ADMIN' ? 'error' : 'primary'}
                               size="small"
                               sx={{ mr: 1 }}
+                              component="span"
                             />
                           ))}
-                        </Box>
+                        </span>
                       }
                     />
                   </ListItem>

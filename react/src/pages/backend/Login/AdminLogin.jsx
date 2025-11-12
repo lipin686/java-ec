@@ -7,62 +7,54 @@ import {
   Button,
   Typography,
   Avatar,
-  Divider,
+  Alert,
   Link as MuiLink,
   CircularProgress
 } from '@mui/material';
 import {
-  Login as LoginIcon,
+  AdminPanelSettings as AdminIcon,
   Person as PersonIcon,
-  AdminPanelSettings as AdminIcon
+  ArrowBack as ArrowBackIcon
 } from '@mui/icons-material';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../../../context/AuthContext';
-import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
+import { adminService } from '../../../services/backend/adminService';
+import { useFormWithSchema } from '../../../hooks/useFormWithSchema';
+import { adminLoginSchema } from '../../../utils/validationSchemas';
+import { storage } from '../../../utils/storage';
 import toast from 'react-hot-toast';
+import { Controller } from 'react-hook-form';
 
-// 表單驗證規則
-const schema = yup.object({
-  email: yup
-    .string()
-    .required('請輸入郵箱')
-    .email('請輸入有效的郵箱格式'),
-  password: yup
-    .string()
-    .required('請輸入密碼')
-    .min(6, '密碼長度不能少於6位'),
-});
-
-const Login = () => {
-  const { login } = useAuth();
+// AdminLogin 組件
+const AdminLogin = () => {
   const navigate = useNavigate();
-
   const {
     control,
     handleSubmit,
     formState: { errors, isSubmitting }
-  } = useForm({
-    resolver: yupResolver(schema),
-    defaultValues: {
-      email: '',
-      password: ''
-    }
+  } = useFormWithSchema(adminLoginSchema, {
+    email: '',
+    password: ''
   });
 
+  // 表單提交處理
   const onSubmit = async (data) => {
     try {
-      const result = await login(data);
+      const result = await adminService.login(data);
 
       if (result.success) {
-        toast.success('登入成功！歡迎回來！');
-        navigate('/dashboard');
+        const { token, user } = result.data;
+
+        // 儲存管理員資訊（直接用 localStorage）
+        localStorage.setItem('adminToken', token);
+        localStorage.setItem('adminUser', JSON.stringify(user));
+
+        toast.success('後台登入成功！');
+        navigate('/admin/dashboard');
       } else {
         toast.error(result.message || '登入失敗');
       }
     } catch (error) {
-      toast.error('登入失敗，請稍後再試');
+      toast.error(error.message || '登入失敗，請檢查您的管理員權限');
     }
   };
 
@@ -74,7 +66,7 @@ const Login = () => {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        background: 'linear-gradient(135deg, #2c3e50 0%, #34495e 50%, #2c3e50 100%)',
         padding: 3,
         width: '100vw',
         position: 'fixed',
@@ -86,10 +78,11 @@ const Login = () => {
     >
       <Card
         sx={{
-          maxWidth: 400,
+          maxWidth: 440,
           width: '100%',
-          boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
-          borderRadius: 3
+          boxShadow: '0 25px 50px rgba(0,0,0,0.25)',
+          borderRadius: 3,
+          borderTop: '4px solid #e74c3c'
         }}
       >
         <CardContent sx={{ p: 4 }}>
@@ -99,20 +92,32 @@ const Login = () => {
               sx={{
                 mx: 'auto',
                 mb: 2,
-                bgcolor: 'primary.main',
-                width: 56,
-                height: 56
+                bgcolor: 'error.main',
+                width: 64,
+                height: 64
               }}
             >
-              <LoginIcon fontSize="large" />
+              <AdminIcon fontSize="large" />
             </Avatar>
-            <Typography variant="h4" component="h1" gutterBottom>
-              用戶登入
+            <Typography variant="h4" component="h1" gutterBottom sx={{ color: '#2c3e50' }}>
+              後台管理系統
             </Typography>
-            <Typography variant="body2" color="text.secondary">
-              歡迎回來！請登入您的帳戶
+            <Typography variant="body1" color="text.secondary">
+              請使用管理員帳戶登入
             </Typography>
           </Box>
+
+          {/* Warning Alert */}
+          <Alert
+            severity="warning"
+            sx={{ mb: 3, borderRadius: 2 }}
+            icon={<AdminIcon />}
+          >
+            <Typography variant="body2">
+              <strong>管理員專用</strong><br />
+              此系統僅限具有管理員權限的用戶使用
+            </Typography>
+          </Alert>
 
           {/* Form */}
           <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ mt: 2 }}>
@@ -123,7 +128,7 @@ const Login = () => {
                 <TextField
                   {...field}
                   fullWidth
-                  label="郵箱"
+                  label="管理員郵箱"
                   type="email"
                   error={!!errors.email}
                   helperText={errors.email?.message}
@@ -142,7 +147,7 @@ const Login = () => {
                 <TextField
                   {...field}
                   fullWidth
-                  label="密碼"
+                  label="管理員密碼"
                   type="password"
                   error={!!errors.password}
                   helperText={errors.password?.message}
@@ -160,38 +165,36 @@ const Login = () => {
                 mt: 3,
                 mb: 2,
                 py: 1.5,
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                bgcolor: 'error.main',
+                fontWeight: 700,
+                textTransform: 'uppercase',
+                letterSpacing: 0.5,
                 '&:hover': {
-                  background: 'linear-gradient(135deg, #5a6fd8 0%, #6b4190 100%)',
+                  bgcolor: 'error.dark',
                 }
               }}
-              startIcon={isSubmitting ? <CircularProgress size={20} /> : <LoginIcon />}
+              startIcon={isSubmitting ? <CircularProgress size={20} /> : <AdminIcon />}
             >
-              {isSubmitting ? '登入中...' : '登入'}
+              {isSubmitting ? '登入中...' : '登入後台'}
             </Button>
           </Box>
 
-          <Divider sx={{ my: 2 }}>其他選項</Divider>
-
-          {/* Footer Links */}
-          <Box sx={{ textAlign: 'center', mt: 2 }}>
-            <Typography variant="body2" sx={{ mb: 1 }}>
-              還沒有帳戶？
-              <MuiLink component={Link} to="/register" sx={{ ml: 1 }}>
-                立即註冊
-              </MuiLink>
-            </Typography>
-
-            <Button
+          {/* Footer */}
+          <Box sx={{ textAlign: 'center', mt: 3, pt: 2, borderTop: 1, borderColor: 'divider' }}>
+            <MuiLink
               component={Link}
-              to="/admin/login"
-              variant="outlined"
-              fullWidth
-              startIcon={<AdminIcon />}
-              sx={{ mt: 2 }}
+              to="/login"
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                textDecoration: 'none',
+                '&:hover': { textDecoration: 'underline' }
+              }}
             >
-              🔐 後台管理系統
-            </Button>
+              <ArrowBackIcon sx={{ mr: 1 }} />
+              返回前台登入
+            </MuiLink>
           </Box>
         </CardContent>
       </Card>
@@ -199,4 +202,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default AdminLogin;

@@ -12,66 +12,46 @@ import {
   CircularProgress
 } from '@mui/material';
 import {
-  PersonAdd as PersonAddIcon,
-  Email as EmailIcon,
+  Login as LoginIcon,
+  Person as PersonIcon,
   AdminPanelSettings as AdminIcon
 } from '@mui/icons-material';
 import { useNavigate, Link } from 'react-router-dom';
-import { authService } from '../../../services/authService';
-import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
+import { useAuth } from '../../../context/AuthContext';
+import { useFormWithSchema } from '../../../hooks/useFormWithSchema';
+import { loginSchema } from '../../../utils/validationSchemas';
+import { storage } from '../../../utils/storage';
 import toast from 'react-hot-toast';
+import { Controller } from 'react-hook-form';
 
-// 表單驗證規則
-const schema = yup.object({
-  email: yup
-    .string()
-    .required('請輸入郵箱')
-    .email('請輸入有效的郵箱格式'),
-  password: yup
-    .string()
-    .required('請輸入密碼')
-    .min(6, '密碼長度不能少於6位'),
-  confirmPassword: yup
-    .string()
-    .required('請確認密碼')
-    .oneOf([yup.ref('password')], '密碼確認不一致'),
-});
-
-const Register = () => {
+const Login = () => {
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const {
     control,
     handleSubmit,
     formState: { errors, isSubmitting }
-  } = useForm({
-    resolver: yupResolver(schema),
-    defaultValues: {
-      email: '',
-      password: '',
-      confirmPassword: ''
-    }
+  } = useFormWithSchema(loginSchema, {
+    email: '',
+    password: ''
   });
 
   const onSubmit = async (data) => {
     try {
-      const registerData = {
-        email: data.email,
-        password: data.password
-      };
-
-      const result = await authService.register(registerData);
+      const result = await login(data);
 
       if (result.success) {
-        toast.success('註冊成功！請使用您的郵箱和密碼登入。');
-        navigate('/login');
+        // 儲存登入資訊（如需自訂可用 storage.set）
+        // storage.set('token', result.data.token);
+        // storage.set('user', result.data.user);
+        toast.success('登入成功！歡迎回來！');
+        navigate('/dashboard');
       } else {
-        toast.error(result.message || '註冊失敗');
+        toast.error(result.message || '登入失敗');
       }
     } catch (error) {
-      toast.error(error.message || '註冊失敗，請稍後再試');
+      toast.error('登入失敗，請稍後再試');
     }
   };
 
@@ -83,7 +63,7 @@ const Register = () => {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        background: 'linear-gradient(135deg, #52c41a 0%, #389e0d 100%)',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
         padding: 3,
         width: '100vw',
         position: 'fixed',
@@ -95,9 +75,9 @@ const Register = () => {
     >
       <Card
         sx={{
-          maxWidth: 420,
+          maxWidth: 400,
           width: '100%',
-          boxShadow: '0 20px 40px rgba(0,0,0,0.15)',
+          boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
           borderRadius: 3
         }}
       >
@@ -108,18 +88,18 @@ const Register = () => {
               sx={{
                 mx: 'auto',
                 mb: 2,
-                bgcolor: 'success.main',
+                bgcolor: 'primary.main',
                 width: 56,
                 height: 56
               }}
             >
-              <PersonAddIcon fontSize="large" />
+              <LoginIcon fontSize="large" />
             </Avatar>
             <Typography variant="h4" component="h1" gutterBottom>
-              用戶註冊
+              用戶登入
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              創建您的新帳戶
+              歡迎回來！請登入您的帳戶
             </Typography>
           </Box>
 
@@ -138,7 +118,7 @@ const Register = () => {
                   helperText={errors.email?.message}
                   margin="normal"
                   InputProps={{
-                    startAdornment: <EmailIcon sx={{ mr: 1, color: 'action.active' }} />,
+                    startAdornment: <PersonIcon sx={{ mr: 1, color: 'action.active' }} />,
                   }}
                 />
               )}
@@ -156,24 +136,6 @@ const Register = () => {
                   error={!!errors.password}
                   helperText={errors.password?.message}
                   margin="normal"
-                  placeholder="請輸入密碼（至少6位）"
-                />
-              )}
-            />
-
-            <Controller
-              name="confirmPassword"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  label="確認密碼"
-                  type="password"
-                  error={!!errors.confirmPassword}
-                  helperText={errors.confirmPassword?.message}
-                  margin="normal"
-                  placeholder="請再次輸入密碼"
                 />
               )}
             />
@@ -187,14 +149,14 @@ const Register = () => {
                 mt: 3,
                 mb: 2,
                 py: 1.5,
-                bgcolor: 'success.main',
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                 '&:hover': {
-                  bgcolor: 'success.dark',
+                  background: 'linear-gradient(135deg, #5a6fd8 0%, #6b4190 100%)',
                 }
               }}
-              startIcon={isSubmitting ? <CircularProgress size={20} /> : <PersonAddIcon />}
+              startIcon={isSubmitting ? <CircularProgress size={20} /> : <LoginIcon />}
             >
-              {isSubmitting ? '註冊中...' : '創建帳戶'}
+              {isSubmitting ? '登入中...' : '登入'}
             </Button>
           </Box>
 
@@ -203,9 +165,9 @@ const Register = () => {
           {/* Footer Links */}
           <Box sx={{ textAlign: 'center', mt: 2 }}>
             <Typography variant="body2" sx={{ mb: 1 }}>
-              已有帳戶？
-              <MuiLink component={Link} to="/login" sx={{ ml: 1 }}>
-                立即登入
+              還沒有帳戶？
+              <MuiLink component={Link} to="/register" sx={{ ml: 1 }}>
+                立即註冊
               </MuiLink>
             </Typography>
 
@@ -226,4 +188,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Login;

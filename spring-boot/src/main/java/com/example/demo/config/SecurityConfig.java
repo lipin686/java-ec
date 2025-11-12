@@ -46,6 +46,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/auth/**").permitAll()  // 前台認證相關路徑開放訪問
                 .requestMatchers("/admin/v1/auth/**").permitAll()  // 後台認證相關路徑開放訪問
                 .requestMatchers("/api/public/**").permitAll()  // 公開API
+                .requestMatchers("/images/**", "/public/**", "/static/**").permitAll()
 
                 // 前台API路徑 - 需要USER或ADMIN角色
                 .requestMatchers("/api/v1/**").hasAnyRole("USER", "ADMIN")

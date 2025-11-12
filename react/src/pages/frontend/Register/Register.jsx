@@ -6,31 +6,25 @@ import {
   TextField,
   Button,
   Typography,
-  Container,
   Avatar,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
   Divider,
+  Link as MuiLink,
   CircularProgress
 } from '@mui/material';
 import {
   PersonAdd as PersonAddIcon,
-  Save as SaveIcon
+  Email as EmailIcon,
+  AdminPanelSettings as AdminIcon
 } from '@mui/icons-material';
+import { useNavigate, Link } from 'react-router-dom';
+import { authService } from '../../../services/frontend/authService.js';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import toast from 'react-hot-toast';
-import { adminService } from '../../../services/adminService';
 
-// 使用Yup定義表單驗證規則
+// 表單驗證規則
 const schema = yup.object({
-  name: yup
-    .string()
-    .required('請輸入姓名')
-    .min(2, '姓名長度不能少於2位'),
   email: yup
     .string()
     .required('請輸入郵箱')
@@ -43,98 +37,94 @@ const schema = yup.object({
     .string()
     .required('請確認密碼')
     .oneOf([yup.ref('password')], '密碼確認不一致'),
-  role: yup
-    .string()
-    .required('請選擇角色')
 });
 
-const CreateUserForm = () => {
+const Register = () => {
+  const navigate = useNavigate();
+
   const {
     control,
     handleSubmit,
-    reset,
     formState: { errors, isSubmitting }
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      name: '',
       email: '',
       password: '',
-      confirmPassword: '',
-      role: 'USER'
+      confirmPassword: ''
     }
   });
 
   const onSubmit = async (data) => {
     try {
-      const userData = {
-        name: data.name,
+      const registerData = {
         email: data.email,
-        password: data.password,
-        role: data.role
+        password: data.password
       };
 
-      let result;
-      if (data.role === 'ADMIN') {
-        result = await adminService.createAdmin(userData);
-      } else {
-        result = await adminService.createUser(userData);
-      }
+      const result = await authService.register(registerData);
 
       if (result.success) {
-        toast.success(`${data.role === 'ADMIN' ? '管理員' : '用戶'}創建成功！`);
-        reset(); // 重置表單
+        toast.success('註冊成功！請使用您的郵箱和密碼登入。');
+        navigate('/login');
       } else {
-        toast.error(result.message || '創建失敗');
+        toast.error(result.message || '註冊失敗');
       }
     } catch (error) {
-      toast.error(error.message || '創建失敗，請稍後再試');
+      toast.error(error.message || '註冊失敗，請稍後再試');
     }
   };
 
   return (
-    <Container maxWidth="sm" sx={{ mt: 4 }}>
-      <Card sx={{ boxShadow: 3, borderRadius: 2 }}>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        background: 'linear-gradient(135deg, #52c41a 0%, #389e0d 100%)',
+        padding: 3,
+        width: '100vw',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0
+      }}
+    >
+      <Card
+        sx={{
+          maxWidth: 420,
+          width: '100%',
+          boxShadow: '0 20px 40px rgba(0,0,0,0.15)',
+          borderRadius: 3
+        }}
+      >
         <CardContent sx={{ p: 4 }}>
           {/* Header */}
-          <Box sx={{ textAlign: 'center', mb: 4 }}>
+          <Box sx={{ textAlign: 'center', mb: 3 }}>
             <Avatar
               sx={{
                 mx: 'auto',
                 mb: 2,
-                bgcolor: 'primary.main',
-                width: 64,
-                height: 64
+                bgcolor: 'success.main',
+                width: 56,
+                height: 56
               }}
             >
               <PersonAddIcon fontSize="large" />
             </Avatar>
             <Typography variant="h4" component="h1" gutterBottom>
-              創建新用戶
+              用戶註冊
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              填寫以下資訊來創建新的用戶帳戶
+              創建您的新帳戶
             </Typography>
           </Box>
 
           {/* Form */}
-          <Box component="form" onSubmit={handleSubmit(onSubmit)}>
-            <Controller
-              name="name"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  label="姓名"
-                  error={!!errors.name}
-                  helperText={errors.name?.message}
-                  margin="normal"
-                  placeholder="請輸入姓名"
-                />
-              )}
-            />
-
+          <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ mt: 2 }}>
             <Controller
               name="email"
               control={control}
@@ -147,7 +137,9 @@ const CreateUserForm = () => {
                   error={!!errors.email}
                   helperText={errors.email?.message}
                   margin="normal"
-                  placeholder="請輸入郵箱"
+                  InputProps={{
+                    startAdornment: <EmailIcon sx={{ mr: 1, color: 'action.active' }} />,
+                  }}
                 />
               )}
             />
@@ -186,43 +178,52 @@ const CreateUserForm = () => {
               )}
             />
 
-            <Controller
-              name="role"
-              control={control}
-              render={({ field }) => (
-                <FormControl fullWidth margin="normal" error={!!errors.role}>
-                  <InputLabel>角色</InputLabel>
-                  <Select {...field} label="角色">
-                    <MenuItem value="USER">一般用戶</MenuItem>
-                    <MenuItem value="ADMIN">管理員</MenuItem>
-                  </Select>
-                  {errors.role && (
-                    <Typography variant="caption" color="error" sx={{ mt: 1, ml: 2 }}>
-                      {errors.role.message}
-                    </Typography>
-                  )}
-                </FormControl>
-              )}
-            />
-
-            <Divider sx={{ my: 3 }} />
-
             <Button
               type="submit"
               fullWidth
               variant="contained"
               disabled={isSubmitting}
-              size="large"
-              startIcon={isSubmitting ? <CircularProgress size={20} /> : <SaveIcon />}
-              sx={{ py: 1.5 }}
+              sx={{
+                mt: 3,
+                mb: 2,
+                py: 1.5,
+                bgcolor: 'success.main',
+                '&:hover': {
+                  bgcolor: 'success.dark',
+                }
+              }}
+              startIcon={isSubmitting ? <CircularProgress size={20} /> : <PersonAddIcon />}
             >
-              {isSubmitting ? '創建中...' : '創建用戶'}
+              {isSubmitting ? '註冊中...' : '創建帳戶'}
+            </Button>
+          </Box>
+
+          <Divider sx={{ my: 2 }}>其他選項</Divider>
+
+          {/* Footer Links */}
+          <Box sx={{ textAlign: 'center', mt: 2 }}>
+            <Typography variant="body2" sx={{ mb: 1 }}>
+              已有帳戶？
+              <MuiLink component={Link} to="/login" sx={{ ml: 1 }}>
+                立即登入
+              </MuiLink>
+            </Typography>
+
+            <Button
+              component={Link}
+              to="/admin/login"
+              variant="outlined"
+              fullWidth
+              startIcon={<AdminIcon />}
+              sx={{ mt: 2 }}
+            >
+              🔐 後台管理系統
             </Button>
           </Box>
         </CardContent>
       </Card>
-    </Container>
+    </Box>
   );
 };
 
-export default CreateUserForm;
+export default Register;
