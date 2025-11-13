@@ -15,4 +15,8 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 
     // 根據商品編號查找未刪除商品
     Product findByProductNoAndDeletedAtIsNull(String productNo);
+
+    // 查詢上架期間內且狀態為開啟且未刪除的商品
+    List<Product> findByStatusAndStartAtLessThanEqualAndEndAtGreaterThanEqualAndDeletedAtIsNull(
+            com.example.demo.enums.ProductStatus status, java.time.LocalDateTime now1, java.time.LocalDateTime now2);
 }

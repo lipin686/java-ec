@@ -48,16 +48,14 @@ public class SecurityConfig {
                 .requestMatchers("/api/public/**").permitAll()  // 公開API
                 .requestMatchers("/images/**", "/public/**", "/static/**").permitAll()
 
-                // 前台API路徑 - 需要USER或ADMIN角色
-                .requestMatchers("/api/v1/**").hasAnyRole("USER", "ADMIN")
+                // 前台商品列表公開API
+                .requestMatchers("/api/v1/products").permitAll()
+                // 前台商品詳細頁公開API
+                .requestMatchers("/api/v1/products/{id}").permitAll()
 
                 // 後台管理路徑 - 只允許ADMIN角色
                 .requestMatchers("/admin/v1/**").hasRole("ADMIN")
-
-                // 保留舊路徑的相容性
-                .requestMatchers("/api/frontend/**").hasAnyRole("USER", "ADMIN")
                 .requestMatchers("/api/backend/**").hasRole("ADMIN")
-                .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
 
                 // 其他路徑需要認證

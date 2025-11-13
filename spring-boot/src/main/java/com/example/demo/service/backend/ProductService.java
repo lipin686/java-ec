@@ -2,7 +2,7 @@ package com.example.demo.service.backend;
 
 import com.example.demo.dto.request.backend.CreateProductRequest;
 import com.example.demo.dto.request.backend.UpdateProductRequest;
-import com.example.demo.dto.response.ProductResponse;
+import com.example.demo.dto.response.backend.ProductResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;

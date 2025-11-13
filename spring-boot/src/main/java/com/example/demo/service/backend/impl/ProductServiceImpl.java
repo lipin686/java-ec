@@ -2,7 +2,7 @@ package com.example.demo.service.backend.impl;
 
 import com.example.demo.dto.request.backend.CreateProductRequest;
 import com.example.demo.dto.request.backend.UpdateProductRequest;
-import com.example.demo.dto.response.ProductResponse;
+import com.example.demo.dto.response.backend.ProductResponse;
 import com.example.demo.entity.Product;
 import com.example.demo.enums.ProductStatus;
 import com.example.demo.exception.UserNotFoundException;
@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@Service
+@Service("backendProductServiceImpl")
 @RequiredArgsConstructor
 @Transactional
 public class ProductServiceImpl implements ProductService {

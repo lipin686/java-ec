@@ -4,7 +4,7 @@ import com.example.demo.dto.request.backend.CreateProductRequest;
 import com.example.demo.dto.request.backend.UpdateProductRequest;
 import com.example.demo.dto.request.backend.ProductSearchRequest;
 import com.example.demo.dto.response.ApiResponse;
-import com.example.demo.dto.response.ProductResponse;
+import com.example.demo.dto.response.backend.ProductResponse;
 import com.example.demo.service.backend.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@RestController
+@RestController("backendProductController")
 @RequestMapping("/admin/v1/products")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ADMIN')")
