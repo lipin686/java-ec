@@ -1,6 +1,5 @@
-package com.example.demo.dto.response;
+package com.example.demo.dto.response.frontend;
 
-import com.example.demo.enums.ProductStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,17 +13,14 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class ProductResponse {
-
     private Long id;
     private String name;
     private String description;
     private BigDecimal price;
     private Integer stock;
     private String imageUrl;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private ProductStatus status;
     private LocalDateTime startAt;
     private LocalDateTime endAt;
     private String productNo;
 }
+
