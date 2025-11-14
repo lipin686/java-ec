@@ -16,17 +16,20 @@ import {
   Person as PersonIcon,
   AdminPanelSettings as AdminIcon
 } from '@mui/icons-material';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
 import { useFormWithSchema } from '../../../hooks/useFormWithSchema';
 import { loginSchema } from '../../../utils/validationSchemas';
-import { storage } from '../../../utils/storage';
 import toast from 'react-hot-toast';
 import { Controller } from 'react-hook-form';
 
 const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // 獲取登入前的頁面路徑，如果沒有則默認跳轉到首頁
+  const from = location.state?.from || '/';
 
   const {
     control,
@@ -42,11 +45,9 @@ const Login = () => {
       const result = await login(data);
 
       if (result.success) {
-        // 儲存登入資訊（如需自訂可用 storage.set）
-        // storage.set('token', result.data.token);
-        // storage.set('user', result.data.user);
         toast.success('登入成功！歡迎回來！');
-        navigate('/dashboard');
+        // 登入成功後跳轉回原頁面
+        navigate(from, { replace: true });
       } else {
         toast.error(result.message || '登入失敗');
       }

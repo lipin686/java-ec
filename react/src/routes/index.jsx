@@ -5,9 +5,11 @@ import AdminProtectedRoute from '../components/common/AdminProtectedRoute';
 import AdminLayout from '../components/layout/AdminLayout';
 
 // 前台
+import Home from '../pages/frontend/Home/Home';
 import Login from '../pages/frontend/Login/Login';
 import Register from '../pages/frontend/Register/Register';
 import Dashboard from '../pages/frontend/Dashboard/Dashboard';
+import FrontendProductDetail from '../pages/frontend/ProductDetail/ProductDetail';
 
 // 後台
 import AdminLogin from '../pages/backend/Login/AdminLogin';
@@ -21,8 +23,11 @@ import AdminList from '../pages/backend/Admin/AdminList';
 
 const AppRoutes = () => (
   <Routes>
-    {/* 前台 */}
-    <Route path="/" element={<Navigate to="/login" replace />} />
+    {/* 前台公開頁面 - 不需要登入 */}
+    <Route path="/" element={<Home />} />
+    <Route path="/products/:id" element={<FrontendProductDetail />} />
+
+    {/* 前台會員功能 */}
     <Route path="/login" element={<Login />} />
     <Route path="/register" element={<Register />} />
     <Route
@@ -54,8 +59,8 @@ const AppRoutes = () => (
       <Route path="products/:id" element={<ProductDetail />} />
     </Route>
 
-    {/* 404 */}
-    <Route path="*" element={<Navigate to="/login" replace />} />
+    {/* 404 - 重定向到首頁 */}
+    <Route path="*" element={<Navigate to="/" replace />} />
   </Routes>
 );
 

@@ -16,17 +16,21 @@ import {
   Person as PersonIcon,
   ArrowBack as ArrowBackIcon
 } from '@mui/icons-material';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { adminService } from '../../../services/backend/adminService';
 import { useFormWithSchema } from '../../../hooks/useFormWithSchema';
 import { adminLoginSchema } from '../../../utils/validationSchemas';
-import { storage } from '../../../utils/storage';
 import toast from 'react-hot-toast';
 import { Controller } from 'react-hook-form';
 
 // AdminLogin 組件
 const AdminLogin = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // 獲取登入前的頁面路徑，如果沒有則默認跳轉到後台首頁
+  const from = location.state?.from || '/admin/dashboard';
+
   const {
     control,
     handleSubmit,
@@ -49,7 +53,8 @@ const AdminLogin = () => {
         localStorage.setItem('adminUser', JSON.stringify(user));
 
         toast.success('後台登入成功！');
-        navigate('/admin/dashboard');
+        // 登入成功後跳轉回原頁面
+        navigate(from, { replace: true });
       } else {
         toast.error(result.message || '登入失敗');
       }
