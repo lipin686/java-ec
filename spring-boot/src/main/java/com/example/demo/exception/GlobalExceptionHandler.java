@@ -86,4 +86,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ApiResponse.error("伺服器發生錯誤，請稍後再試"));
     }
+
+    // 處理購物車項目不存在
+    @ExceptionHandler(CartItemNotFoundException.class)
+    public ResponseEntity<ApiResponse<String>> handleCartItemNotFoundException(CartItemNotFoundException ex) {
+        logger.warn("購物車項目不存在: {}", ex.getMissingIds());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ApiResponse.error(ex.getMessage()));
+    }
 }

@@ -26,11 +26,19 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/demo_db
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/demo_db?useSSL=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: demo_user
       SPRING_DATASOURCE_PASSWORD: demo_password
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      # 使用 Flyway 而非 JPA DDL Auto
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
       SPRING_JPA_SHOW_SQL: true
+      # Flyway 配置
+      SPRING_FLYWAY_ENABLED: "true"
+      SPRING_FLYWAY_BASELINE_ON_MIGRATE: "true"
+      SPRING_FLYWAY_LOCATIONS: classpath:db/migration
+      SPRING_FLYWAY_CLEAN_DISABLED: "false"
+      # 暫時跳過驗證錯誤（重建後應移除）
+      SPRING_FLYWAY_VALIDATE_ON_MIGRATE: "false"
     depends_on:
       mysql:
         condition: service_healthy
