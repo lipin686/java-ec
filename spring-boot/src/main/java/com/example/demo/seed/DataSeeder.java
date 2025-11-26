@@ -7,6 +7,7 @@ import com.example.demo.enums.UserRole;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Component
+@Profile("!test")  // 在测试环境中不执行
 public class DataSeeder implements CommandLineRunner {
     private static final Logger log = LoggerFactory.getLogger(DataSeeder.class);
 

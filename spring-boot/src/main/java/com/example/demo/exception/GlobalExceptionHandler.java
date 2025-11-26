@@ -56,7 +56,7 @@ public class GlobalExceptionHandler {
     // 處理 RuntimeException（業務邏輯錯誤）
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ApiResponse<String>> handleRuntimeException(RuntimeException ex) {
-        logger.error("業務邏輯錯誤: ", ex);
+        logger.warn("業務邏輯錯誤: ", ex);
 
         // 根據錯誤訊息判斷適當的 HTTP 狀態碼
         String message = ex.getMessage();
