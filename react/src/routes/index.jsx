@@ -10,6 +10,7 @@ import Login from '../pages/frontend/Login/Login';
 import Register from '../pages/frontend/Register/Register';
 import Dashboard from '../pages/frontend/Dashboard/Dashboard';
 import FrontendProductDetail from '../pages/frontend/ProductDetail/ProductDetail';
+import Cart from '../pages/frontend/Cart/Cart';
 
 // 後台
 import AdminLogin from '../pages/backend/Login/AdminLogin';
@@ -35,6 +36,14 @@ const AppRoutes = () => (
       element={
         <ProtectedRoute>
           <Dashboard />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/cart"
+      element={
+        <ProtectedRoute>
+          <Cart />
         </ProtectedRoute>
       }
     />
