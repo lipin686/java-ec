@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,16 +27,17 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findByEmailAndEnabledAndDeletedFalse(email, true)
                 .orElseThrow(() -> new UsernameNotFoundException("用戶不存在或已被停用: " + email));
 
-        return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getEmail())
-                .password(user.getPassword())
-                .authorities(user.getRoles().stream()
+        return new CustomUserDetails(
+                user.getId(),  // 包含 userId
+                user.getEmail(),
+                user.getPassword(),
+                user.getEnabled(),
+                user.getAccountNonExpired(),
+                user.getCredentialsNonExpired(),
+                user.getAccountNonLocked(),
+                user.getRoles().stream()
                         .map(role -> new SimpleGrantedAuthority(role.getCode()))
-                        .collect(Collectors.toList()))
-                .accountExpired(!user.getAccountNonExpired())
-                .accountLocked(!user.getAccountNonLocked())
-                .credentialsExpired(!user.getCredentialsNonExpired())
-                .disabled(!user.getEnabled())
-                .build();
+                        .collect(Collectors.toList())
+        );
     }
 }

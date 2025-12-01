@@ -56,7 +56,7 @@ public class GlobalExceptionHandler {
     // 處理 RuntimeException（業務邏輯錯誤）
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ApiResponse<String>> handleRuntimeException(RuntimeException ex) {
-        logger.error("業務邏輯錯誤: ", ex);
+        logger.warn("業務邏輯錯誤: ", ex);
 
         // 根據錯誤訊息判斷適當的 HTTP 狀態碼
         String message = ex.getMessage();
@@ -85,5 +85,13 @@ public class GlobalExceptionHandler {
         logger.error("發生未預期的錯誤: ", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ApiResponse.error("伺服器發生錯誤，請稍後再試"));
+    }
+
+    // 處理購物車項目不存在
+    @ExceptionHandler(CartItemNotFoundException.class)
+    public ResponseEntity<ApiResponse<String>> handleCartItemNotFoundException(CartItemNotFoundException ex) {
+        logger.warn("購物車項目不存在: {}", ex.getMissingIds());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ApiResponse.error(ex.getMessage()));
     }
 }

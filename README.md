@@ -6,6 +6,8 @@
 # 在專案根目錄執行
 docker-compose up --build -d
 ```
+### 測試
+docker exec demo-app ./mvnw test
 
 ### 服務訪問地址
 

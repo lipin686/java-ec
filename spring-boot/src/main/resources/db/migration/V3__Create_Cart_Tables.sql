@@ -1,0 +1,25 @@
+-- 購-- 購物車主表
+CREATE TABLE cart (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主鍵',
+    user_id BIGINT NOT NULL COMMENT '會員ID',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '建立時間',
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新時間',
+    INDEX idx_user_id (user_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='購物車主表';
+
+-- 購物車明細表
+CREATE TABLE cart_item (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主鍵',
+    cart_id BIGINT NOT NULL COMMENT '購物車ID',
+    product_id BIGINT NOT NULL COMMENT '商品ID',
+    quantity INT NOT NULL DEFAULT 1 COMMENT '數量',
+    checked TINYINT(1) DEFAULT 1 COMMENT '是否勾選(結帳用)',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '加入時間',
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新時間',
+    UNIQUE KEY uk_cart_product (cart_id, product_id),
+    INDEX idx_product_id (product_id),
+    FOREIGN KEY (cart_id) REFERENCES cart(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='購物車明細表';
+
