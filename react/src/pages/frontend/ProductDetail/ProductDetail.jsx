@@ -14,7 +14,11 @@ import {
   Stack,
   Divider,
   Card,
-  CardContent
+  CardContent,
+  IconButton,
+  Badge,
+  Snackbar,
+  TextField
 } from '@mui/material';
 import {
   ArrowBack as ArrowBackIcon,
@@ -23,10 +27,13 @@ import {
   Dashboard as DashboardIcon,
   Inventory as InventoryIcon,
   Schedule as ScheduleIcon,
-  Description as DescriptionIcon
+  Description as DescriptionIcon,
+  Add as AddIcon,
+  Remove as RemoveIcon
 } from '@mui/icons-material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
+import { useCart } from '../../../context/CartContext';
 import productService from '../../../services/frontend/productService';
 import './ProductDetail.css';
 
@@ -34,9 +41,12 @@ const ProductDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { isAuthenticated, user } = useAuth();
+  const { cartItemCount, addToCart } = useCart();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 
   useEffect(() => {
     if (id) {
@@ -99,6 +109,15 @@ const ProductDetail = () => {
           <Stack direction="row" spacing={2}>
             {isAuthenticated ? (
               <>
+                <IconButton
+                  color="inherit"
+                  onClick={() => navigate('/cart')}
+                  sx={{ mr: 1 }}
+                >
+                  <Badge badgeContent={cartItemCount} color="error">
+                    <ShoppingCartIcon />
+                  </Badge>
+                </IconButton>
                 <Button
                   color="inherit"
                   startIcon={<DashboardIcon />}
@@ -116,6 +135,13 @@ const ProductDetail = () => {
               </>
             ) : (
               <>
+                <IconButton
+                  color="inherit"
+                  onClick={() => navigate('/login', { state: { from: `/products/${id}` } })}
+                  sx={{ mr: 1 }}
+                >
+                  <ShoppingCartIcon />
+                </IconButton>
                 <Button
                   color="inherit"
                   startIcon={<LoginIcon />}
@@ -247,12 +273,70 @@ const ProductDetail = () => {
 
                   {/* 操作按鈕 */}
                   <Stack spacing={2}>
+                    {/* 數量選擇器 */}
+                    {isAuthenticated && product.stock > 0 && (
+                      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                        <Typography variant="body1" sx={{ mr: 2, fontWeight: 'bold' }}>
+                          數量:
+                        </Typography>
+                        <IconButton
+                          onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                          disabled={quantity <= 1}
+                          sx={{ border: '1px solid #ddd' }}
+                        >
+                          <RemoveIcon />
+                        </IconButton>
+                        <TextField
+                          value={quantity}
+                          onChange={(e) => {
+                            const val = parseInt(e.target.value) || 1;
+                            setQuantity(Math.min(Math.max(1, val), product.stock));
+                          }}
+                          size="small"
+                          sx={{ width: 80, mx: 1 }}
+                          inputProps={{
+                            style: { textAlign: 'center' },
+                            min: 1,
+                            max: product.stock
+                          }}
+                        />
+                        <IconButton
+                          onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
+                          disabled={quantity >= product.stock}
+                          sx={{ border: '1px solid #ddd' }}
+                        >
+                          <AddIcon />
+                        </IconButton>
+                      </Box>
+                    )}
+
                     <Button
                       fullWidth
                       variant="contained"
                       size="large"
                       startIcon={<ShoppingCartIcon />}
-                      disabled={product.stock === 0}
+                      disabled={product.stock === 0 || !isAuthenticated}
+                      onClick={async () => {
+                        if (!isAuthenticated) {
+                          navigate('/login', { state: { from: `/products/${id}` } });
+                          return;
+                        }
+                        try {
+                          await addToCart(product.id, quantity);
+                          setSnackbar({
+                            open: true,
+                            message: `成功加入 ${quantity} 件商品到購物車`,
+                            severity: 'success'
+                          });
+                          setQuantity(1);
+                        } catch (err) {
+                          setSnackbar({
+                            open: true,
+                            message: err.message || '加入購物車失敗',
+                            severity: 'error'
+                          });
+                        }
+                      }}
                       sx={{
                         py: 1.5,
                         fontSize: '1.1rem',
@@ -281,6 +365,22 @@ const ProductDetail = () => {
           <Alert severity="warning">找不到該商品</Alert>
         )}
       </Container>
+
+      {/* 提示訊息 */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          severity={snackbar.severity}
+          sx={{ width: '100%' }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

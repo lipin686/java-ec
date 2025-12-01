@@ -14,22 +14,27 @@ import {
   Chip,
   CircularProgress,
   Alert,
-  Stack
+  Stack,
+  IconButton,
+  Badge
 } from '@mui/material';
 import {
   Login as LoginIcon,
   PersonAdd as RegisterIcon,
   Visibility as VisibilityIcon,
-  Dashboard as DashboardIcon
+  Dashboard as DashboardIcon,
+  ShoppingCart as ShoppingCartIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext';
+import { useCart } from '../../../context/CartContext';
 import productService from '../../../services/frontend/productService';
 import './Home.css';
 
 const Home = () => {
   const navigate = useNavigate();
   const { isAuthenticated, user } = useAuth();
+  const { cartItemCount } = useCart();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -86,6 +91,15 @@ const Home = () => {
           <Stack direction="row" spacing={2}>
             {isAuthenticated ? (
               <>
+                <IconButton
+                  color="inherit"
+                  onClick={() => navigate('/cart')}
+                  sx={{ mr: 1 }}
+                >
+                  <Badge badgeContent={cartItemCount} color="error">
+                    <ShoppingCartIcon />
+                  </Badge>
+                </IconButton>
                 <Button
                   color="inherit"
                   startIcon={<DashboardIcon />}
@@ -103,6 +117,13 @@ const Home = () => {
               </>
             ) : (
               <>
+                <IconButton
+                  color="inherit"
+                  onClick={() => navigate('/login', { state: { from: '/cart' } })}
+                  sx={{ mr: 1 }}
+                >
+                  <ShoppingCartIcon />
+                </IconButton>
                 <Button
                   color="inherit"
                   startIcon={<LoginIcon />}
