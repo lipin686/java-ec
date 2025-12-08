@@ -1,4 +1,4 @@
-package com.example.demo.service.impl;
+package com.example.demo.service.frontend.impl;
 
 import com.example.demo.dto.request.AddToCartRequest;
 import com.example.demo.dto.request.UpdateCartItemRequest;
@@ -13,7 +13,7 @@ import com.example.demo.repository.CartItemRepository;
 import com.example.demo.repository.CartRepository;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.repository.UserRepository;
-import com.example.demo.service.CartService;
+import com.example.demo.service.frontend.CartService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
