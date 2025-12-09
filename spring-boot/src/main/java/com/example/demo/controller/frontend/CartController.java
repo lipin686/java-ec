@@ -5,7 +5,7 @@ import com.example.demo.dto.request.UpdateCartItemRequest;
 import com.example.demo.dto.response.ApiResponse;
 import com.example.demo.dto.response.frontend.CartResponse;
 import com.example.demo.security.CustomUserDetails;
-import com.example.demo.service.CartService;
+import com.example.demo.service.frontend.CartService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;

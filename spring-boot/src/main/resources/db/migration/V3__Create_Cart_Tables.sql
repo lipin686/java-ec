@@ -1,4 +1,4 @@
--- 購-- 購物車主表
+-- 購物車主表
 CREATE TABLE cart (
     id BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '主鍵',
     user_id BIGINT NOT NULL COMMENT '會員ID',

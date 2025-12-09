@@ -1,4 +1,4 @@
-package com.example.demo.service;
+package com.example.demo.service.frontend;
 
 import com.example.demo.dto.request.AddToCartRequest;
 import com.example.demo.dto.request.UpdateCartItemRequest;
