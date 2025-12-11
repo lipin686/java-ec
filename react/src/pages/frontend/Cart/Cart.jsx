@@ -400,8 +400,7 @@ const Cart = () => {
                       setError('請至少選擇一件商品');
                       return;
                     }
-                    // TODO: 實作結帳功能
-                    alert('結帳功能開發中...');
+                    navigate('/checkout');
                   }}
                 >
                   前往結帳 ({checkedItems.length})

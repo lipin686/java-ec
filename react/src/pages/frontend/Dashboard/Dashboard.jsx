@@ -26,7 +26,9 @@ import {
   Edit as EditIcon,
   Settings as SettingsIcon,
   AdminPanelSettings as AdminIcon,
-  Dashboard as DashboardIcon
+  Dashboard as DashboardIcon,
+  ShoppingCart as CartIcon,
+  Receipt as OrderIcon
 } from '@mui/icons-material';
 import { useAuth } from '../../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -177,6 +179,30 @@ const Dashboard = () => {
                 <Divider sx={{ mb: 2 }} />
 
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  <Button
+                    variant="contained"
+                    startIcon={<CartIcon />}
+                    fullWidth
+                    onClick={() => navigate('/cart')}
+                    sx={{
+                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    }}
+                  >
+                    我的購物車
+                  </Button>
+
+                  <Button
+                    variant="contained"
+                    startIcon={<OrderIcon />}
+                    fullWidth
+                    onClick={() => navigate('/orders')}
+                    sx={{
+                      background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                    }}
+                  >
+                    我的訂單
+                  </Button>
+
                   <Button
                     variant="outlined"
                     startIcon={<EditIcon />}

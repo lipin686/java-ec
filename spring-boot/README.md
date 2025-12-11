@@ -425,14 +425,7 @@ project-root/
 ## 🚀 部署指南
 
 ### Docker 部署 (推薦)
-
-1. **生產環境配置**
-```bash
-# 複製並修改生產環境配置
-cp src/main/resources/application.properties src/main/resources/application-prod.properties
-```
-
-2. **啟動生產環境**
+**啟動生產環境**
 ```bash
 docker-compose -f docker-compose.yml up -d --build
 ```
