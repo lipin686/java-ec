@@ -1,0 +1,24 @@
+# 測試專用 Dockerfile
+FROM eclipse-temurin:17-jdk
+
+# 設置工作目錄
+WORKDIR /app
+
+# 複製 Maven 包裝器和 pom.xml
+COPY mvnw .
+COPY mvnw.cmd .
+COPY pom.xml .
+COPY .mvn .mvn
+
+# 下載依賴
+RUN ./mvnw dependency:go-offline -B
+
+# 複製源代碼和測試代碼
+COPY src src
+
+# 設置 Maven 不跳過測試
+ENV MAVEN_OPTS="-Xmx512m"
+
+# 默認命令：運行測試並生成覆蓋率報告（即使測試失敗也生成報告）
+CMD ["sh", "-c", "./mvnw test jacoco:report || ./mvnw jacoco:report"]
+

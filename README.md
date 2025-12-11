@@ -6,8 +6,17 @@
 # 在專案根目錄執行
 docker-compose up --build -d
 ```
-### 測試
+
+### 運行測試與生成覆蓋率報告
+``` bash
 docker exec demo-app ./mvnw test
+```
+OR
+``` bash
+./run-test-coverage-v2.sh
+python3 show-coverage.py
+open spring-boot/target/site/jacoco/index.html
+```
 
 ### 服務訪問地址
 
