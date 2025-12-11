@@ -1,0 +1,44 @@
+services:
+  # MySQL 測試資料庫
+  mysql-test:
+    image: mysql:8
+    container_name: demo-mysql-test
+    environment:
+      MYSQL_ROOT_PASSWORD: testpassword
+      MYSQL_DATABASE: test_db
+      MYSQL_USER: test_user
+      MYSQL_PASSWORD: test_password
+    ports:
+      - "3307:3306"
+    tmpfs:
+      - /var/lib/mysql  # 使用內存資料庫，測試後自動清除
+    networks:
+      - test-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # Spring Boot 測試容器
+  backend-test:
+    build:
+      context: ./spring-boot
+      dockerfile: Dockerfile.test
+    container_name: demo-test
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-test:3306/test_db?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: test_user
+      SPRING_DATASOURCE_PASSWORD: test_password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: create-drop
+      SPRING_FLYWAY_ENABLED: "false"
+      SPRING_PROFILES_ACTIVE: test
+    depends_on:
+      mysql-test:
+        condition: service_healthy
+    networks:
+      - test-network
+
+networks:
+  test-network:
+    driver: bridge
+
