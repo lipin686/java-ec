@@ -11,6 +11,9 @@ import Register from '../pages/frontend/Register/Register';
 import Dashboard from '../pages/frontend/Dashboard/Dashboard';
 import FrontendProductDetail from '../pages/frontend/ProductDetail/ProductDetail';
 import Cart from '../pages/frontend/Cart/Cart';
+import Checkout from '../pages/frontend/Order/Checkout';
+import OrderList from '../pages/frontend/Order/OrderList';
+import OrderDetail from '../pages/frontend/Order/OrderDetail';
 
 // 後台
 import AdminLogin from '../pages/backend/Login/AdminLogin';
@@ -44,6 +47,30 @@ const AppRoutes = () => (
       element={
         <ProtectedRoute>
           <Cart />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/checkout"
+      element={
+        <ProtectedRoute>
+          <Checkout />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/orders"
+      element={
+        <ProtectedRoute>
+          <OrderList />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/orders/:orderId"
+      element={
+        <ProtectedRoute>
+          <OrderDetail />
         </ProtectedRoute>
       }
     />

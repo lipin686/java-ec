@@ -4,6 +4,10 @@ import ProtectedRoute from '../components/common/ProtectedRoute';
 import Login from '../pages/frontend/Login/Login';
 import Register from '../pages/frontend/Register/Register';
 import Dashboard from '../pages/frontend/Dashboard/Dashboard';
+import Cart from '../pages/frontend/Cart/Cart';
+import Checkout from '../pages/frontend/Order/Checkout';
+import OrderList from '../pages/frontend/Order/OrderList';
+import OrderDetail from '../pages/frontend/Order/OrderDetail';
 
 const FrontendRoutes = () => (
   <Routes>
@@ -15,6 +19,38 @@ const FrontendRoutes = () => (
       element={
         <ProtectedRoute>
           <Dashboard />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/cart"
+      element={
+        <ProtectedRoute>
+          <Cart />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/checkout"
+      element={
+        <ProtectedRoute>
+          <Checkout />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/orders"
+      element={
+        <ProtectedRoute>
+          <OrderList />
+        </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/orders/:orderId"
+      element={
+        <ProtectedRoute>
+          <OrderDetail />
         </ProtectedRoute>
       }
     />
